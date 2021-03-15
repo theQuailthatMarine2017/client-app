@@ -15,7 +15,12 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import dotenv from 'dotenv'
 import moment from 'vue-moment'
-dotenv.config()
+import VueApexCharts from 'vue-apexcharts'
+Vue.use(VueApexCharts);
+
+
+Vue.component('apexchart', VueApexCharts);
+dotenv.config();
  
 Vue.use(VueSimpleAlert);
 Vue.use(moment)
