@@ -1,7 +1,9 @@
 <template>
 <div >
     <b-navbar toggleable="lg" style="background-color:#0386ac;" >
+        <!-- <b-icon style="width: 60px; height: 60px;color:white;" icon="list"></b-icon> -->
     <b-navbar-brand href="#" style="color:white;font-weight:bolder;">
+        
         <img  style="width:190px;height:70px;" src="https://i.postimg.cc/Yqq67FGt/New-Project-25.png" alt="Shards Dashboard">
         <!-- <h5>HomesforExpats</h5> -->
     </b-navbar-brand>
@@ -159,7 +161,6 @@
 
   </b-container>
 
-
  <b-sidebar
       id="sidebar-backdrop"
       title="HomesForExpats"
@@ -167,30 +168,34 @@
       backdrop
       shadow
     >
-    <b-alert show variant="success" style="margin:8px;">
-     <strong>You Have 3 Pending Leads!</strong>
-   </b-alert>
+    
       <div class="px-3 py-2" >
           <b-list-group flush>
-            <b-list-group-item><b-button style="background-color:orange;font-weight:bold;" block>Overview</b-button></b-list-group-item>
+            <b-list-group-item><b-button @click="goSideBar('agents-portal')" style="background-color:#0386ac;font-weight:bold;" block>Overview</b-button></b-list-group-item>
             <b-list-group-item> <span style="text-decoration:underline;">Add New</span>
 
                 <b-list-group flush>
-                    <b-list-group-item><b-button @click="goAddAgent"  style="background-color:orange;font-weight:bold;" block>Agent</b-button></b-list-group-item>
-                    <b-list-group-item><b-button style="background-color:orange;font-weight:bold;" block>Property</b-button></b-list-group-item>
-                    <b-list-group-item><b-button style="background-color:orange;font-weight:bold;" block>Holiday Deal</b-button></b-list-group-item>
+                    <b-list-group-item>
+                        
+                        <b-button @click="goSideBar('adds-agent')"  style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+                        <b-button @click="goSideBar('adds-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
+                        <b-button @click="goSideBar('adds-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
+
+                    </b-list-group-item>
                 </b-list-group>
             </b-list-group-item>
-            <b-list-group-item> <span style="text-decoration:underline;">Manage</span>
+            <b-list-group-item> <span style="font-weight:bold;"><h5>Manage</h5></span>
 
                 <b-list-group flush>
-                    <b-list-group-item><b-button style="background-color:orange;font-weight:bold;" block>Agent</b-button></b-list-group-item>
-                    <b-list-group-item><b-button style="background-color:orange;font-weight:bold;" block>Property</b-button></b-list-group-item>
-                    <b-list-group-item><b-button style="background-color:orange;font-weight:bold;" block>Leads</b-button></b-list-group-item>
-                    <b-list-group-item><b-button style="background-color:orange;font-weight:bold;" block>Holiday Deal</b-button></b-list-group-item>
+                    <b-list-group-item>
+                        <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+                        <b-button @click="goSideBar('manage-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
+                        <b-button @click="goSideBar('manage-leads')" style="background-color:#0386ac;font-weight:bold;" block>Leads</b-button>
+                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
+                        <b-button @click="goSideBar('manage-account')" style="background-color:#0386ac;font-weight:bold;" block>Your Account</b-button>
+                        </b-list-group-item>
                 </b-list-group>
             </b-list-group-item>
-            <b-list-group-item><b-button style="background-color:orange;font-weight:bold;" block>Your Account</b-button></b-list-group-item>
             </b-list-group>
         
       </div>
@@ -231,10 +236,11 @@ export default {
         }
     },
     methods:{
-        goAddAgent(){
+        goSideBar(route){
 
-            this.$router.push({name:'adds-agent'})
-        }
+            this.$router.push({name:route})
+
+        },
     }
     
 }

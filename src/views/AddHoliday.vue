@@ -35,46 +35,74 @@
             </b-collapse>
         </b-navbar>
 
-        <b-container fluid style="height:65vh;margin-top:20px;border-top:10px;border-color:white;">
-    <h3>Add New Agent</h3>
+        <b-container fluid style="height:70vh;margin-top:20px;border-top:10px;border-color:white;">
+    <h3>Add New Holiday Deal</h3>
 
     <b-row>
         <b-col  cols="6">
+
+            <b-card>
             
            <div>
                <b-form-group
-                    label="Enter Agent's Full Names:"
+                    label="Enter Holiday Package Name:"
                     
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Agent's Full Names"  v-model="agent.fullnames" placeholder="Enter Agent's Names"></b-form-input>
+                <b-form-input title="Enter Holiday Package Name"  v-model="agent.fullnames" placeholder="Enter Agent's Names"></b-form-input>
                </b-form-group>
                 <b-form-group
-                    label="Enter Agent's Mobile:"
+                    label="Enter Holiday Agent's Mobile:"
                     
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Agent's Mobile"  v-model="agent.mobile" placeholder="Enter Agent's Mobile"></b-form-input>
+                <b-form-input title="Enter Holiday Agent Mobile"  v-model="agent.mobile" placeholder="Enter Agent's Mobile"></b-form-input>
                </b-form-group>
                 <b-form-group
-                    label="Enter Agent's Email:"
+                    label="Enter Holiday Agent's Email:"
                     
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input v-model="agent.email" title="Enter Agent's Email"   placeholder="Enter Agent's Email"></b-form-input>
+                <b-form-input v-model="agent.email" title="Enter Holiday Agent's Email"   placeholder="Enter Agent's Email"></b-form-input>
                </b-form-group>
 
                <b-form-group
-                    label="Upload Agent's Photo: Size MUST Be 64*64"
+                    label="Enter Holiday Description:"
+                    label-for="input-1"
+                    style="text-align:left;font-weight:bolder;"
+                    valid-feedback="Thank you!"
+                    invalid-feedback="invalid input"
+                    >
+                <b-form-textarea
+                        id="textarea"
+                        
+                        placeholder="Enter Brief Holiday Package Description"
+                        rows="3"
+                        max-rows="4"
+                        ></b-form-textarea>
+               </b-form-group>
+                
+           </div>
+
+            </b-card>
+
+
+        </b-col>
+
+        <b-col cols="6">
+
+            <b-card>
+            <b-form-group
+                    label="Upload Holiday Location Photos:"
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
@@ -82,64 +110,34 @@
                     >
             <b-form-file
                 v-model="agent.photo"
-                placeholder="Select Agent's Photo To Upload...."
+                multiple
+                placeholder="Select Photo To Upload...."
                 accept="image/jpegf"
                 drop-placeholder="Drop Agent's Photo here..."
                 ></b-form-file>
             </b-form-group>
-                
-           </div>
-
-        </b-col>
-
-        <b-col cols="6">
 
             <b-form-group
-                    label="Upload Agent's National ID and KRA Certificate:"
+                    label="Enter Holiday Package Cost"
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-            <b-form-file
-            multiple
-                v-model="agent.id_photo"
-                placeholder="Select Agent's Documents To Upload...."
-                accept="image/jpeg,application/pdf"
-                drop-placeholder="Drop Agent's Photo here..."
-                ></b-form-file>
-            </b-form-group>
-
-            
-
-            <b-form-group
-                    label="Enter Agent's National ID number:"
-                    label-for="input-1"
-                    style="text-align:left;font-weight:bolder;"
-                    valid-feedback="Thank you!"
-                    invalid-feedback="invalid input"
-                    >
-                <b-form-input title="Enter Agent's National ID number"  v-model="agent.national_id" placeholder="Enter Agent's National ID number"></b-form-input>
-               </b-form-group>
-
-            <b-form-group
-                    label="Enter Agent's KRA Pin:"
-                    label-for="input-1"
-                    style="text-align:left;font-weight:bolder;"
-                    valid-feedback="Thank you!"
-                    invalid-feedback="invalid input"
-                    >
-                <b-form-input title="Enter Agent's KRA Pin"  v-model="agent.kra" placeholder="Enter Agent's KRA Pin"></b-form-input>
+                <b-form-spinbutton value="30000" step="1000" min="30000" max="100000"></b-form-spinbutton>
                </b-form-group>
 
                <b-alert show variant="danger" style="padding:12px;">
                    <strong> Upload Policy<br></strong>
-                    <strong>Be Aware That Agents Can Only Be Added After Business Director's Approval!</strong>
+                    <strong>Be Aware That Holidays Can Only Be Added After Business Director's Approval!</strong>
                 </b-alert>
 
-               <b-button block style="background-color:orange;font-weight:bolder;">Add New Agent</b-button>
+               <b-button block style="background-color:orange;font-weight:bolder;">Add New Holiday</b-button>
 
+            </b-card>
         </b-col>
+
+        
 
     </b-row>
 
@@ -154,7 +152,9 @@
       backdrop
       shadow
     >
-   
+    <b-alert show variant="success" style="margin:8px;">
+     <strong>You Have 3 Pending Leads!</strong>
+   </b-alert>
       <div class="px-3 py-2" >
           <b-list-group flush>
             <b-list-group-item><b-button @click="goSideBar('agents-portal')" style="background-color:#0386ac;font-weight:bold;" block>Overview</b-button></b-list-group-item>

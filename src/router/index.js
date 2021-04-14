@@ -37,6 +37,38 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AddAgent.vue')
   },
   {
+    path: '/adds-property',
+    name: 'adds-property',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/AddProperty.vue')
+  },
+  {
+    path: '/adds-holiday',
+    name: 'adds-holiday',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/AddHoliday.vue')
+  },
+  {
+    path: '/manage-agent',
+    name: 'manage-agent',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/ManageAgent.vue')
+  },
+  {
+    path: '/manage-property',
+    name: 'manage-property',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/ManageProperty.vue')
+  },
+  {
     path: '/',
     name: 'Home',
     // route level code-splitting
