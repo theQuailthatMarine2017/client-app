@@ -17,6 +17,16 @@ import dotenv from 'dotenv'
 import moment from 'vue-moment'
 import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts);
+import { SimpleTimelinePlugin } from 'simple-vue-timeline';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faUserSecret)
+
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.use(SimpleTimelinePlugin);
 
 
 Vue.component('apexchart', VueApexCharts);

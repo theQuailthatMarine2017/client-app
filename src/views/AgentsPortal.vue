@@ -21,7 +21,7 @@
           
         <!-- </b-nav-form> -->
         <template>
-            <b-button v-b-toggle.sidebar-backdrop style="margin-right:5px;background-color:orange;font-weight:bold;border:1;border-width:3px;border-color:white;">Open SideMenu</b-button>
+            <!-- <b-button v-b-toggle.sidebar-backdrop style="margin-right:5px;background-color:orange;font-weight:bold;border:1;border-width:3px;border-color:white;">Open SideMenu</b-button> -->
           </template>
         <!-- <b-nav-item right>
            Using 'button-content' slot -->
@@ -36,140 +36,10 @@
     </b-collapse>
   </b-navbar>
 
-  <b-container fluid style="height:90vh;margin-top:20px;border-top:10px;border-color:white;">
-    <h3>Overview</h3>
 
-    <b-row>
-        <b-col cols="3">
-            <b-card
-                title="Listed Houses"
-                img-top
-                
-                tag="article"
-                style="max-width: 40rem;background-color:#0386ac;color:white;font-weight:bolder;border-width:5px;border-color:orange;"
-                class="mb-2"
-            >
-                <b-card-text>
-                20 Houses Actively Listed
-                </b-card-text>
-
-            </b-card>
-        </b-col>
-        <b-col cols="3">
-            <b-card
-                title="Houses Rented"
-                img-top
-                tag="article"
-                style="max-width: 20rem;background-color:#0386ac;color:white;font-weight:bolder;border-width:5px;border-color:orange;"
-                class="mb-2"
-            >
-                <b-card-text>
-                8 Houses Rented 
-                </b-card-text>
-
-            </b-card>
-        </b-col>
-        <b-col cols="3">
-            <b-card
-                title="Commissions Paid"
-                img-top
-                tag="article"
-                style="max-width: 20rem;background-color:#0386ac;color:white;font-weight:bolder;border-width:5px;border-color:orange;"
-                class="mb-2"
-            >
-                <b-card-text>
-                KES 800000
-                </b-card-text>
-
-            </b-card>
-        </b-col>
-        <b-col cols="3">
-            <b-card
-                title="Pending Leads"
-                img-top
-                tag="article"
-                style="max-width: 20rem;background-color:#0386ac;color:white;font-weight:bolder;border-width:5px;border-color:orange;"
-                class="mb-2"
-            >
-                <b-card-text>
-                5 Leads Pending
-                </b-card-text>
-
-            </b-card>
-        </b-col>
-    
-    </b-row>
-
-    <b-row>
- <b-col cols="6">
-            <b-card
-                title="Leads Locations"
-                img-top
-                tag="article"
-                style="background-color:#0386ac;color:white;font-weight:bolder;border-width:5px;border-color:orange;"
-                class="mb-2"
-            >
-                <b-card-text>
-                America,
-                Canada
-                </b-card-text>
-
-            </b-card>
-        </b-col>
-
-
-        <b-col cols="6">
-            <b-card
-                title="Total Web Page Visits"
-                img-top
-                tag="article"
-                style="background-color:#0386ac;color:white;font-weight:bolder;border-width:5px;border-color:orange;"
-                class="mb-2"
-            >
-                <b-card-text>
-                500,000 Daily Visits
-                </b-card-text>
-
-            </b-card>
-        </b-col>
-
-    </b-row>
-    
-     <b-row no-gutters>
-
-        <b-col cols="4">
-            
-            <h5 style="margin-top:18px;">New Listing Monthly</h5>
-            <apexchart width="400" type="bar" :options="chartOptions" :series="series"></apexchart>
-        </b-col>
-
-        <b-col cols="4">
-            
-            <h5 style="margin-top:18px;">Listed Property Types</h5>
-            <apexchart width="400" type="pie" :options="options_listed" :series="options_listed.series" ></apexchart>
-        </b-col>
-
-        <b-col cols="4">
-            
-            <h5 style="margin-top:18px;">Rented Property Types</h5>
-            <apexchart width="400" type="pie" :options="options" :series="options.series" ></apexchart>
-        </b-col>
-
-        
-
-    </b-row>
-
-  </b-container>
-
- <b-sidebar
-      id="sidebar-backdrop"
-      title="HomesForExpats"
-      :backdrop-variant="variant"
-      backdrop
-      shadow
-    >
-    
-      <div class="px-3 py-2" >
+<b-row>
+<b-cols cols="10">
+    <div class="px-3 py-2" style="width:450px;">
           <b-list-group flush>
             <b-list-group-item><b-button @click="goSideBar('agents-portal')" style="background-color:#0386ac;font-weight:bold;" block>Overview</b-button></b-list-group-item>
             <b-list-group-item> <span style="text-decoration:underline;">Add New</span>
@@ -199,7 +69,127 @@
             </b-list-group>
         
       </div>
-    </b-sidebar>
+</b-cols>
+
+
+
+          <b-col cols="4">
+  
+         <b-container style="margin:10px;text-align:left;color:black;height:70vh;border-radius:12px;">
+                <b-container style="margin-top:20px;font-weight:bolder;">
+<h3>Your Profile</h3>
+                    <b-list-group flush>
+                        <b-list-group-item><b-img fluid thumbnail  src="https://blackrealtors.com/wp-content/uploads/2019/11/black-man-realtor.jpg" width="240" height="240" alt="Center image"></b-img></b-list-group-item>
+                        <b-list-group-item>FULLNAMES: Steven Kinyanjui Biko</b-list-group-item>
+                        <b-list-group-item>MOBILE: 0705009784</b-list-group-item>
+                        <b-list-group-item>EMAIL: tam@g.com</b-list-group-item>
+                        <b-list-group-item>AGENT PORTAL CODE: SKB001-21-5</b-list-group-item>
+                        <b-button block variant="info">Request Profile Update</b-button>
+                    </b-list-group>
+                    
+                        
+                </b-container>
+            
+    </b-container>
+
+     
+
+  
+          </b-col>
+
+          <b-col cols="3">
+
+              <b-container style="margin:0px;text-align:left;color:white;border-radius:12px;padding:20px;">
+<h3 style="color:black;">Notification Center</h3>
+
+<div style="width:450px;height:214px;overflow:auto;background-color:#d3d3d3;padding:15px;border-radius:15px;">
+    <div style="padding:10px;background-color:#0386ac;width:400px;border-radius:12px;">
+                        <h6 style="font-weight:bold;">
+                            <span style="text-decoration:underline;">New Client Request!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Runda Meadows, House Number 412
+                        </h6>
+                    </div>
+                    <div style="padding:10px;background-color:#0386ac;margin-top:5px;width:400px;border-radius:12px;">
+                        <h6 style="font-weight:bold;">
+                            <span style="text-decoration:underline;">Agent Update Account Request!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Requested by Steven Kinyanjui Biko.
+                        </h6>
+                    </div>
+                    <div style="margin-top:5px;padding:10px;background-color:#0386ac;width:400px;border-radius:12px;">
+                        <h6 style="font-weight:bold;">
+                            <span style="text-decoration:underline;">New Property Added!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Ridgways, Dell Road, House Number 412
+                        </h6>
+                    </div>
+                    <div style="margin-top:5px;padding:10px;background-color:#0386ac;width:400px;border-radius:12px;">
+                        <h6 style="font-weight:bold;">
+                            <span style="text-decoration:underline;">New Tenant Added!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Shirley Oganda from Toronto Canada<br>Renting Runda, Mimosa Grove, House Number 234
+                        </h6>
+                    </div>
+                    <div style="margin-top:5px;padding:10px;background-color:#0386ac;width:400px;border-radius:12px;">
+                        <h6 style="font-weight:bold;">
+                            <span style="text-decoration:underline;">New Holiday Added!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Diani, Searock Apartments
+                        </h6>
+                    </div>
+</div>
+
+<h3 style="margin-top:9px;color:black;">Overview</h3>
+
+<b-row no-gutters style="text-align:center;">
+
+   
+
+    <b-col cols="6">
+
+        <div style="padding:8px;background-color:#0386ac;border-radius:12px;">
+                        <h6 style="font-weight:bold;">
+                            20 Houses Listed
+                        </h6>
+                    </div>
+
+    </b-col>
+
+    <b-col cols="6">
+
+        <div style="padding:8px;background-color:#0386ac;border-radius:12px;margin-left:5px;">
+                        <h6 style="font-weight:bold;">
+                            8 Houses Rented
+                        </h6>
+                    </div>
+
+    </b-col>
+
+    <b-col cols="12">
+
+        <div style="margin-top:8px;padding:10px;background-color:#0386ac;border-radius:12px;">
+                        <h6 style="font-weight:bold;">
+                            5 Holiday Deals Available
+                        </h6>
+                    </div>
+
+
+        <div style="margin-top:8px;padding:10px;background-color:#0386ac;border-radius:12px;">
+            <h6 style="font-weight:bold;">
+                3 Leads Pending
+            </h6>
+        </div>
+
+        <div style="margin-top:8px;padding:10px;background-color:#0386ac;border-radius:12px;width:auto;">
+            <h6 style="font-weight:bold;">
+                40,000 Page Visits from 50 Different Countries
+            </h6>
+        </div>
+
+    </b-col>
+</b-row>
+
+            
+    </b-container>
+  
+          </b-col>
+
+
+
+</b-row>
+
+
 
 
 
@@ -212,6 +202,7 @@ import { Bar } from 'vue-chartjs';
 export default {
     data(){
         return{
+            time:Date.now(),
             variant: 'dark',
             chartOptions: {
           chart: {
