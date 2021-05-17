@@ -36,8 +36,8 @@
         </b-navbar>
 
         <b-container fluid style="height:65vh;margin-top:20px;border-top:10px;border-color:white;">
-    <h3>Add New Agent</h3>
-
+    <h3>Add New Staff</h3>
+<b-overlay :show="show" rounded="sm">
     <b-row>
         <b-col  cols="6">
             
@@ -60,7 +60,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Agent's Mobile"  v-model="agent.mobile" placeholder="Enter Agent's Mobile"></b-form-input>
+                    <vue-phone-number-input default-country-code="KE" required :only-countries="countries" v-model="agent.mobile" />
                </b-form-group>
                 <b-form-group
                     label="Enter Agent's Email:"
@@ -74,28 +74,24 @@
                </b-form-group>
 
                <b-form-group
-                    label="Upload Agent's Photo: Size MUST Be 64*64"
+                    label="Select Staff Type"
+                    
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-            <b-form-file
-                v-model="agent.photo"
-                placeholder="Select Agent's Photo To Upload...."
-                accept="image/jpegf"
-                drop-placeholder="Drop Agent's Photo here..."
-                ></b-form-file>
-            </b-form-group>
-                
+                <b-form-select v-model="agent.staff_type" :options="type"></b-form-select>
+               </b-form-group>
+
+                    
            </div>
 
         </b-col>
 
         <b-col cols="6">
-
-            <b-form-group
-                    label="Upload Agent's National ID and KRA Certificate:"
+ <b-form-group
+                    label="Upload Staff's Profile Picture Plus National ID and KRA Certificate.PLEASE SELECT PHOTOS IN THE FOLLOWING ORDER: PROFILE PICTURE FIRST THEN OTHER DOCUMENTS."
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
@@ -103,13 +99,12 @@
                     >
             <b-form-file
             multiple
-                v-model="agent.id_photo"
+                v-model="agent_docs"
                 placeholder="Select Agent's Documents To Upload...."
-                accept="image/jpeg,application/pdf"
+                
                 drop-placeholder="Drop Agent's Photo here..."
                 ></b-form-file>
-            </b-form-group>
-
+            </b-form-group>  
             
 
             <b-form-group
@@ -123,25 +118,29 @@
                </b-form-group>
 
             <b-form-group
-                    label="Enter Agent's KRA Pin:"
+                    label="Enter Agent's Portal Code:"
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Agent's KRA Pin"  v-model="agent.kra" placeholder="Enter Agent's KRA Pin"></b-form-input>
+                <b-form-input title="Enter Portal Code"  v-model="agent.agentcode" placeholder="Enter Agent's Portal Code"></b-form-input>
                </b-form-group>
+
+               
 
                <b-alert show variant="danger" style="padding:12px;">
                    <strong> Upload Policy<br></strong>
                     <strong>Be Aware That Agents Can Only Be Added After Business Director's Approval!</strong>
                 </b-alert>
 
-               <b-button block style="background-color:orange;font-weight:bolder;">Add New Agent</b-button>
+               <b-button @click="addAgent" block style="background-color:orange;font-weight:bolder;">Add New Staff</b-button>
 
         </b-col>
 
     </b-row>
+
+</b-overlay>
 
         </b-container>
 
@@ -192,18 +191,28 @@
 </template>
 
 <script>
+
+import axios from 'axios';
+import base64Img from 'base64-img';
+
 export default {
     data(){
         return{
+            type:['IT','BUSINESS/MARKETING','AGENT','ÁCCOUNTING'],
+            show:false,
+            agent_docs:[],
             agent:{
-                photo:null,
+                staff_type:'',
+                agentcode:'',
                 fullnames:'',
                 email:'',
                 mobile:'',
-                kra:'',
                 national_id:'',
-                id_photo:null
-            }
+                profile_pic:'',
+                agent_imgs:[]
+            },
+            final_img:Array,
+            countries:['KE']
         }
     },
     methods:{
@@ -212,6 +221,58 @@ export default {
             this.$router.push({name:route})
 
         },
+        addImg(file){
+
+
+            this.agent.agent_imgs.push(file)
+
+
+            if(this.agent.agent_imgs.length === this.agent_docs.length){
+
+                console.log(this.agent.agent_imgs[0]);
+
+                this.agent.profile_pic = this.agent.agent_imgs[0];
+
+                this.show = true;
+
+                this.agent.agent_imgs.pop(this.agent.agent_imgs[0]);
+
+                
+                axios.post('http://localhost:5001/homesforexpats-55b57/us-central1/addAgent',this.agent).then( res => {
+
+                        console.log(res.data.title);
+                        this.show = false
+                        if (res.data.title === 'success'){
+                            this.$bvToast.toast('Staff Details Succesfully Added!', {
+                                title: "Staff Added!",
+                                variant: 'success',
+                                solid: true
+                            });
+
+                            // this.$router.go(0);
+                            
+                        }
+                })
+            }
+            
+        },
+        async addAgent(){
+            
+            console.log(this.agent_docs)
+            
+            this.agent_docs.forEach(element => {
+
+                var reader = new FileReader();
+
+                reader.readAsDataURL(element);
+
+                reader.onload = async () => {
+                    this.addImg(reader.result)
+                }
+                
+            });
+
+        }
     }
     
 }

@@ -37,8 +37,9 @@
 
         <b-container fluid style="height:100vh;margin-top:20px;border-top:10px;margin-bottom:110px;border-color:white;">
     <h3>Add New Property</h3>
-
+<b-overlay :show="show" rounded="sm">
     <b-row>
+
 
         <b-col  cols="3">
             <b-card>
@@ -53,23 +54,23 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Properyt Location Name"  v-model="agent.fullnames" placeholder="Enter Agent's Names"></b-form-input>
+                <b-form-input v-model="home.location" title="Enter Properyt Location Name"  placeholder="Enter Agent's Names"></b-form-input>
                </b-form-group>
 
                 <b-form-group
                     label="Select Agent To Assign:"
-                    
+                    v-if="agents != null"
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-select v-model="selected" :options="agents"></b-form-select>
+                <b-form-select v-model="home.agent" :options="agents"></b-form-select>
                </b-form-group>
 
 
                 <b-form-group
-                    label="Main Website Banner Description:"
+                    label="Website Banner Description:"
                     
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
@@ -78,7 +79,7 @@
                     >
                     <b-form-textarea
                         id="textarea"
-                        
+                        v-model="home.banner_description"
                         placeholder="Enter Main Website Banner Description"
                         rows="3"
                         max-rows="4"
@@ -86,22 +87,24 @@
                </b-form-group>
 
                <b-form-group
-                    label="Upload Website Banner Image"
+                    label="Main Property Description:"
+                    
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-            <b-form-file
-                v-model="agent.photo"
-                placeholder="Select Banner Image...."
-                accept="image/jpegf"
-                drop-placeholder="Drop Agent's Photo here..."
-                ></b-form-file>
-            </b-form-group>
+                    <b-form-textarea
+                        id="textarea"
+                        v-model="home.main_description"
+                        placeholder="Enter Main Property Description"
+                        rows="3"
+                        max-rows="4"
+                        ></b-form-textarea>
+               </b-form-group>
 
             <b-form-group
-                    label="Upload Property Images (Mimimum 10 Photos): Make Sure All Images Have Been Approved By IT Manager"
+                    label="Upload Property Images (Mimimum 10 Photos): Make Sure To Select Banner Image First Then Rest Of Images."
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
@@ -109,9 +112,9 @@
                     >
             <b-form-file
             multiple
-                v-model="agent.id_photo"
+                v-model="home_imgs"
                 placeholder="Select Property Images To Upload...."
-                accept="image/jpeg,application/pdf"
+                accept="image/jpeg"
                 drop-placeholder="Drop Agent's Photo here..."
                 ></b-form-file>
             </b-form-group>
@@ -135,7 +138,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Property Owners Names"  v-model="agent.national_id" placeholder="Enter Agent's National ID number"></b-form-input>
+                <b-form-input title="Enter Property Owners Names"  v-model="home.owner_name" placeholder="Enter Agent's National ID number"></b-form-input>
                </b-form-group>
 
             <b-form-group
@@ -145,7 +148,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Property Owners Mobile"  v-model="agent.kra" placeholder="Enter Agent's KRA Pin"></b-form-input>
+                <b-form-input title="Enter Property Owners Mobile"  v-model="home.owner_mobile" placeholder="Enter Agent's KRA Pin"></b-form-input>
                </b-form-group>
 
                <b-form-group
@@ -155,7 +158,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Property Owners Email"  v-model="agent.kra" placeholder="Enter Agent's KRA Pin"></b-form-input>
+                <b-form-input title="Enter Property Owners Email"  v-model="home.owner_email" placeholder="Enter Agent's KRA Pin"></b-form-input>
                </b-form-group>
 
             </b-card>
@@ -173,7 +176,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-spinbutton value="40000" step="1000" min="40000" max="600000"></b-form-spinbutton>
+                <b-form-spinbutton value="40000" step="1000" v-model="home.details.price" min="40000" max="600000"></b-form-spinbutton>
                </b-form-group>
 
                <b-form-group
@@ -183,7 +186,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-spinbutton value="1" step="1" min="1" max="10"></b-form-spinbutton>
+                <b-form-spinbutton value="1" step="1" min="1" v-model="home.details.bedrooms" max="10"></b-form-spinbutton>
                </b-form-group>
                <b-form-group
                     label="Enter Number Of Bathrooms"
@@ -192,7 +195,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-spinbutton value="1" step="1" min="1" max="10"></b-form-spinbutton>
+                <b-form-spinbutton value="1" step="1" min="1" v-model="home.details.bathrooms" max="10"></b-form-spinbutton>
                </b-form-group>
 
                <b-form-group
@@ -202,7 +205,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-spinbutton value="1" step="1" min="1" max="4"></b-form-spinbutton>
+                <b-form-spinbutton value="1" step="1" min="1" v-model="home.details.floors" max="4"></b-form-spinbutton>
                </b-form-group>
 
                <b-form-group
@@ -212,7 +215,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-spinbutton value="1" step="1" min="1" max="36"></b-form-spinbutton>
+                <b-form-spinbutton value="1" step="1" min="1" v-model="home.details.minimum_lease" max="36"></b-form-spinbutton>
                </b-form-group>
 
                <b-form-group
@@ -222,7 +225,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-select :options="['Townhouse', 'Apartment', 'Cottage', 'Mansion']"></b-form-select>
+                <b-form-select v-model="home.details.house_type" :options="['Townhouse', 'Apartment', 'Cottage', 'Mansion']"></b-form-select>
                </b-form-group>
 
             </b-card>
@@ -243,9 +246,9 @@
                     <b-form-radio-group
         buttons
         button-variant="outline-primary"
+        v-model="home.details.internet"
         size="sm"
         :options="['availabe','not available']"
-        :aria-describedby="ariaDescribedby"
         name="radio-options-slots"
       >
                     </b-form-radio-group>
@@ -259,12 +262,12 @@
                     invalid-feedback="invalid input"
                     >
                     <b-form-radio-group
-        
+         v-model="home.details.swimming_pool"
         buttons
         button-variant="outline-primary"
         size="sm"
         :options="['availabe','not available']"
-        :aria-describedby="ariaDescribedby"
+
         name="radio-options-slots"
       >
                     </b-form-radio-group>
@@ -278,12 +281,12 @@
                     invalid-feedback="invalid input"
                     >
                     <b-form-radio-group
-        
+         v-model="home.details.entertainment_area"
         buttons
         button-variant="outline-primary"
         size="sm"
         :options="['availabe','not available']"
-        :aria-describedby="ariaDescribedby"
+       
         name="radio-options-slots"
       >
                     </b-form-radio-group>
@@ -297,12 +300,12 @@
                     invalid-feedback="invalid input"
                     >
                     <b-form-radio-group
-       
+       v-model="home.details.private_parking"
         buttons
         button-variant="outline-primary"
         size="sm"
         :options="['availabe','not available']"
-        :aria-describedby="ariaDescribedby"
+       
         name="radio-options-slots"
       >
                     </b-form-radio-group>
@@ -316,12 +319,12 @@
                     invalid-feedback="invalid input"
                     >
                     <b-form-radio-group
-       
+       v-model="home.details.dstv"
         buttons
         button-variant="outline-primary"
         size="sm"
         :options="['availabe','not available']"
-        :aria-describedby="ariaDescribedby"
+        
         name="radio-options-slots"
       >
                     </b-form-radio-group>
@@ -335,12 +338,12 @@
                     invalid-feedback="invalid input"
                     >
                     <b-form-radio-group
-        
+        v-model="home.details.generator"
         buttons
         button-variant="outline-primary"
         size="sm"
         :options="['availabe','not available']"
-        :aria-describedby="ariaDescribedby"
+       
         name="radio-options-slots"
       >
                     </b-form-radio-group>
@@ -354,12 +357,12 @@
                     invalid-feedback="invalid input"
                     >
                     <b-form-radio-group
-       
+       v-model="home.details.dsq"
         buttons
         button-variant="outline-primary"
         size="sm"
         :options="['availabe','not available']"
-        :aria-describedby="ariaDescribedby"
+      
         name="radio-options-slots"
       >
                     </b-form-radio-group>
@@ -370,7 +373,7 @@
                     <strong>Be Aware That Properties Can Only Be Added After Business Director's Approval!</strong>
                 </b-alert>
 
-               <b-button block style="background-color:#0386ac;color:white;font-weight:bolder;">Add New Property</b-button>
+               <b-button block @click="addHome" style="background-color:#0386ac;color:white;font-weight:bolder;">Add New Property</b-button>
 
              </b-card>
 
@@ -379,6 +382,7 @@
          
 
     </b-row>
+</b-overlay>
 
         </b-container>
 
@@ -430,10 +434,12 @@
 
 <script>
 import { uuid } from 'vue-uuid';
-
+import axios from 'axios';
 export default {
     data(){
         return{
+            show:false,
+            home_imgs:[],
             agent:{
                 photo:null,
                 fullnames:'',
@@ -443,29 +449,60 @@ export default {
                 national_id:'',
                 id_photo:null
             },
-            selected:'',
-            agents:[
-                {
-                    text:'Rony Quail',
-                    value:{
-                        fullnames:'Rony Quail',
-                        img:'https://i.postimg.cc/CKh0hPnM/profilepic.jpg'
-                    }
-                },
-                {
-                    text:'Jessica Mawingo',
-                    value:{
-                        fullnames:'Jessica Mawingo',
-                        img:'https://www.blackenterprise.com/wp-content/blogs.dir/1/files/2016/08/WOMEN-OF-POWER_AYO-HAYNES-335x450.jpg'
-                    }
+            agents:[],
+            home:{
+                _id:uuid.v1(),
+                location:'',
+                agent:'',
+                agent_img:null,
+                banner_description:'',
+                banner_img:'',
+                main_description:'',
+                owner_name:'',
+                owner_mobile:'',
+                owner_email:'',
+                cost:null,
+                imgs:[],
+                details:{
+                    bedrooms:1,
+                    minimum_lease:4,
+                    bathrooms:1,
+                    house_type:'',
+                    floors:1,
+                    price:0,
+                    internet:'',
+                    swimming_pool:'',
+                    entertainment_area:'',
+                    private_parking:'',
+                    dstv:'',
+                    furnished:'',
+                    generator:'',
+                    dsq:''
                 }
-            ]
+            }
             
         }
     },
     mounted(){
 
         //Fetch Agents From Database And Populate The Selection options
+        axios.get('http://localhost:5001/homesforexpats-55b57/us-central1/getAgents').then( res => {
+
+
+            if(res.data != null){
+
+                res.data.forEach(element => {
+                        console.log(element.fullnames)
+
+                        this.agents.push(element.fullnames)
+                    });
+
+                    console.log(this.agents);
+
+            }
+                        
+                        
+        })
         
         
     },
@@ -475,6 +512,53 @@ export default {
             this.$router.push({name:route})
 
         },
+        addImg(file){
+
+            this.home.imgs.push(file)
+
+            this.home.banner_img = this.home.imgs[0];
+
+            if(this.home.imgs.length === this.home_imgs.length){
+
+                console.log(this.home.banner_img)
+                this.show = true;
+
+                this.home.imgs.pop(this.home.imgs[0]);
+
+                axios.post('http://localhost:5001/homesforexpats-55b57/us-central1/addHome',this.home).then( res => {
+
+                        console.log(res.data.title);
+                        this.show = false
+                        if (res.data.title === 'success'){
+                            this.$bvToast.toast('Homes Added Succesfully Added!', {
+                                title: "Home Added!",
+                                variant: 'success',
+                                solid: true
+                            });
+
+                            // this.$router.go(0);
+                            
+                        }
+                })
+            }
+        },
+        addHome(){
+
+            console.log(this.home_imgs)
+
+            this.home_imgs.forEach(element => {
+
+                var reader = new FileReader();
+
+                reader.readAsDataURL(element);
+
+                reader.onload = async () => {
+                    this.addImg(reader.result)
+                }
+                
+            });
+
+        }
     }
     
 }

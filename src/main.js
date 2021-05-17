@@ -18,15 +18,20 @@ import moment from 'vue-moment'
 import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts);
 import { SimpleTimelinePlugin } from 'simple-vue-timeline';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import VuePhoneNumberInput from 'vue-phone-number-input';
+import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+
+Vue.component('vue-phone-number-input', VuePhoneNumberInput);
 
 library.add(faUserSecret)
 
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(SimpleTimelinePlugin);
+Vue.component('vue-phone-number-input');
 
 
 Vue.component('apexchart', VueApexCharts);

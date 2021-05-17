@@ -38,6 +38,7 @@
         <b-container fluid style="height:70vh;margin-top:20px;border-top:10px;border-color:white;">
     <h3>Add New Holiday Deal</h3>
 
+<b-overlay :show="show" rounded="sm">
     <b-row>
         <b-col  cols="6">
 
@@ -45,14 +46,14 @@
             
            <div>
                <b-form-group
-                    label="Enter Holiday Package Name:"
+                    label="Enter Holiday Location Name:"
                     
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Holiday Package Name"  v-model="agent.fullnames" placeholder="Enter Agent's Names"></b-form-input>
+                <b-form-input title="Enter Holiday Package Name"  v-model="holiday.name" placeholder="Enter Agent's Names"></b-form-input>
                </b-form-group>
                 <b-form-group
                     label="Enter Holiday Agent's Mobile:"
@@ -62,7 +63,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Holiday Agent Mobile"  v-model="agent.mobile" placeholder="Enter Agent's Mobile"></b-form-input>
+                <b-form-input title="Enter Holiday Agent Mobile"  v-model="holiday.mobile" placeholder="Enter Agent's Mobile"></b-form-input>
                </b-form-group>
                 <b-form-group
                     label="Enter Holiday Agent's Email:"
@@ -72,7 +73,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input v-model="agent.email" title="Enter Holiday Agent's Email"   placeholder="Enter Agent's Email"></b-form-input>
+                <b-form-input v-model="holiday.email" title="Enter Holiday Agent's Email"   placeholder="Enter Agent's Email"></b-form-input>
                </b-form-group>
 
                <b-form-group
@@ -109,10 +110,10 @@
                     invalid-feedback="invalid input"
                     >
             <b-form-file
-                v-model="agent.photo"
+                v-model="holiday_photos"
                 multiple
                 placeholder="Select Photo To Upload...."
-                accept="image/jpegf"
+                accept="image/jpeg"
                 drop-placeholder="Drop Agent's Photo here..."
                 ></b-form-file>
             </b-form-group>
@@ -124,7 +125,18 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-spinbutton value="30000" step="1000" min="30000" max="100000"></b-form-spinbutton>
+                    
+                <b-form-spinbutton v-model="holiday.cost" :value=30000 step="250" min="10000" max="100000"></b-form-spinbutton>
+               </b-form-group>
+
+                <b-form-group
+                    label="Enter Holiday Discount"
+                    label-for="input-1"
+                    style="text-align:left;font-weight:bolder;"
+                    valid-feedback="Thank you!"
+                    invalid-feedback="invalid input"
+                    >
+                <b-form-spinbutton v-model="holiday.discount" :value=10 step="5" min="5" max="30"></b-form-spinbutton>
                </b-form-group>
 
                <b-alert show variant="danger" style="padding:12px;">
@@ -132,7 +144,7 @@
                     <strong>Be Aware That Holidays Can Only Be Added After Business Director's Approval!</strong>
                 </b-alert>
 
-               <b-button block style="background-color:orange;font-weight:bolder;">Add New Holiday</b-button>
+               <b-button block @click="addHoliday" style="background-color:orange;font-weight:bolder;">Add New Holiday</b-button>
 
             </b-card>
         </b-col>
@@ -140,7 +152,7 @@
         
 
     </b-row>
-
+</b-overlay>
         </b-container>
 
 
@@ -192,18 +204,24 @@
 </template>
 
 <script>
+import { uuid } from 'vue-uuid';
+import axios from 'axios';
+
+
 export default {
     data(){
         return{
-            agent:{
-                photo:null,
-                fullnames:'',
-                email:'',
+            holiday:{
+                _id:uuid.v1(),
+                name:'',
                 mobile:'',
-                kra:'',
-                national_id:'',
-                id_photo:null
-            }
+                email:'',
+                description:'',
+                photos:[],
+                cost:0,
+                discount:0
+            },
+            holiday_photos:[],
         }
     },
     methods:{
@@ -212,6 +230,49 @@ export default {
             this.$router.push({name:route})
 
         },
+        addImg(file){
+
+            this.holiday.photos.push(file)
+
+            if(this.holiday.photos.length === this.holiday_photos.length){
+
+                this.show = true;
+
+                axios.post('http://localhost:5001/homesforexpats-55b57/us-central1/addHoliday',this.holiday).then( res => {
+
+                        console.log(res.data.title);
+                        this.show = false
+                        if (res.data.title === 'success'){
+                            this.$bvToast.toast('Holiday Added Succesfully Added!', {
+                                title: "Holiday Added!",
+                                variant: 'success',
+                                solid: true
+                            });
+
+                            // this.$router.go(0);
+                            
+                        }
+                })
+            }
+        },
+        addHoliday(){
+
+            console.log(this.holiday_photos)
+
+            this.holiday_photos.forEach(element => {
+
+                var reader = new FileReader();
+
+                reader.readAsDataURL(element);
+
+                reader.onload = async () => {
+                    this.addImg(reader.result)
+                }
+                
+            });
+
+        }
+
     }
     
 }

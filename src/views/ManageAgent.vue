@@ -34,8 +34,8 @@
             </b-collapse>
         </b-navbar>
 
-        <b-container fluid style="height:65vh;margin-top:20px;border-top:10px;border-color:white;">
-    <h3>Manage Agents</h3>
+        <b-container fluid style="height:100vh;margin-top:20px;border-top:10px;border-color:white;">
+    <h3>Manage Staff</h3>
 
     <b-input-group placeholder style="margin-right:18px;margin-top:10px;margin-bottom:10px;width:655px;">
     <template #prepend>
@@ -46,12 +46,12 @@
   </b-input-group>
 
 
-    <b-table :perPage="9" outlined hover :items="agents"  :fields="fields">
-        <template #cell(photo)="data">
+    <b-table :perPage="5" outlined hover :items="agents"  :fields="fields">
+        <template #cell(profile_pic)="data">
         <b-img height="85" width="85" :src="data.value"></b-img>
       </template>
       <template #cell(action)="data">
-        <b-button @click="showAgent(data.item)" variant="info" style="margin:2px;font-weight:bold;">{{data.value}}</b-button>
+        <b-button @click="showAgent(data.value)" variant="info" style="margin:2px;font-weight:bold;">{{data.value}}</b-button>
       </template>
     </b-table>
 
@@ -185,17 +185,14 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     data(){
         return{
-            agents: [
-          { photo: 'https://i.postimg.cc/CKh0hPnM/profilepic.jpg', fullnames: 'Rony Quail', email: 'rony@petconnect',mobile:'+254705009784',kra:'A9L939392002L',national_id:'30005325',pending_leads:5,rented:3,commission_earned:300000,action:'View Profile'},
-          { photo: 'https://www.blackenterprise.com/wp-content/blogs.dir/1/files/2016/08/WOMEN-OF-POWER_AYO-HAYNES-335x450.jpg', fullnames: 'Jessica Mawingo', email: 'jess@petconnect',mobile:'+254722690333',kra:'A9L939392002L',national_id:'212235325',pending_leads:2,rented:6,commission_earned:454500,action:'View Profile'}
-          
-        ],
+            agents: [],
         fields: [
           {
-            key: 'photo',
+            key: 'profile_pic',
             sortable: false
           },
           {
@@ -211,24 +208,8 @@ export default {
             sortable: false
           },
           {
-            key: 'kra',
-            sortable: false
-          },
-          {
             key: 'national_id',
             sortable: false
-          },
-          {
-            key: 'pending_leads',
-            sortable: false
-          },
-          {
-            key: 'rented',
-            sortable: false
-          },
-          {
-            key: 'commission_earned',
-            sortable: true
           },
           {
             key: 'action',
@@ -240,6 +221,25 @@ export default {
         updateAgent:null
         }
     },
+    mounted(){
+      axios.get('http://localhost:5001/homesforexpats-55b57/us-central1/getAgents').then( res => {
+
+
+            if(res.data != null){
+
+                res.data.forEach(element => {
+                        console.log(element)
+
+                        this.agents.push(element)
+                    });
+
+                    console.log(this.agents);
+
+            }
+                        
+                        
+        });
+    },
     methods:{
         goSideBar(route){
 
@@ -248,9 +248,10 @@ export default {
         },
         showAgent(item){
 
-            this.updateAgent = item
+          console.log(item)
+            // this.updateAgent = item
 
-            this.$refs['update'].show()
+            // this.$refs['update'].show()
         }
         
     }
