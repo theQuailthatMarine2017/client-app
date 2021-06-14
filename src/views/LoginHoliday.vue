@@ -9,19 +9,19 @@
          <div class="row">
             <div class="col-lg-7 col-md-8 col-sm-8 mx-auto">
                <b-overlay :show="show" rounded="sm">
-               <div class="card login" style="background-color:rgba(3, 134, 172, 0.5);border-radius:15px;" ref="signin">
-                  <h3 style="text-align:center;color:white;text-decoration:underline;">Agent's Portal</h3>
-                  <h5 style="text-align:center;color:white;">This Portal Is <span style="font-weight:bolder;">STRICTLY</span> For Agent's Registered With HomesForExpats.</h5>
+               <div class="card login" style="background-color:rgba(3, 134, 172, 0.9);border-radius:15px;" ref="signin">
+                  <h3 style="text-align:center;color:white;text-decoration:underline;">Holiday Portal</h3>
+                  <h5 style="text-align:center;color:white;">This Portal Is <span style="font-weight:bolder;">STRICTLY</span> For Tenants Renting With HomesForExpats.</h5>
                   <h4 style="text-align:center;color:white;">Sign In</h4>
                   <form class="form-group" style="text-align:center;">
-                     <input style="margin-bottom:15px;" v-model="staff.code" class="form-control" placeholder="Enter Your Portal Code Assigned To You." required>
+                     <input style="margin-bottom:15px;" v-model="client.code" class="form-control" placeholder="Enter Your Portal Code Assigned To You." required>
                   </form>
                   <b-button @click="login_agent"  style="margin-bottom:19px;font-weight:bolder;text-align:center;font-size:15px;background-color:#00BFFF;color:white;" class="btn-white">Login</b-button>
                   <div style="background-color:red;text-align:center;color:white;">
-                     <p style="margin:10px;">Contact IT If Forgotten Your Portal Code</p>
+                     <p style="margin:10px;">Contact The Agent You Rented With For Portal Access If You Have Forgotten Or Lost Our Access Code</p>
                   </div>
                   <div v-if="login_error != null" style="background-color:red;text-align:center;color:white;">
-                     <p style="margin:10px;">{{login_error}}<br>Contact Administrator If Issue Continues</p>
+                     <p style="margin:10px;">{{login_error}}<br>Contact Agent If Issue Continues</p>
                   </div>
                </div>
                </b-overlay>
@@ -42,68 +42,42 @@ export default {
         return{
             show:false,
             login_error:null,
-            staff:{
+            client:{
                code:null
             },
             success:false
         }
     },
-    mounted(){
-
-       this.checkUserStatus()
-    },
     methods:{
-       checkUserStatus(){
-
-          var code = localStorage.getItem("user_agentcode")
-
-
-          if(localStorage.getItem('user_agentcode') === null){
-
-             this.show = false
-          }else{
-
-             this.$router.push({name:'agents-portal'})
-
-          }
-       },
         login_agent(){
            this.success = false
+           this.login_error = null
 
            this.show = true
            //
-           axios.post('https://us-central1-homesforexpats.cloudfunctions.net/login',this.staff).then( res => {
+           axios.post('https://us-central1-homesforexpats.cloudfunctions.net/loginHoliday',this.client).then( res => {
 
+              console.log(res.data)
 
               if(res.data.title === 'user found'){
 
-                 localStorage.setItem("user_fullnames", res.data.user.fullnames)
-                 localStorage.setItem("user_mobile", res.data.user.mobile)
-                 localStorage.setItem("user_email", res.data.user.email)
-                 localStorage.setItem("user_agentcode", res.data.user.agentcode)
-                 localStorage.setItem("user_profilepic", res.data.user.profile_pic)
-                 localStorage.setItem("user_stafftype", res.data.user.staff_type)
-
-
                  this.success = true
                  this.show= false
-
+                 localStorage.setItem("client_fullnames", res.data.user.fullnames)
+                 localStorage.setItem("client_code", res.data.user.clientcode)
+                
                }
 
-               if(res.data.title === "user not found"){
+           }).catch(err => {
 
-                  this.show = false
-
-                  this.login_error = res.data.title
-               }
-
+               this.login_error = err
            })
         }
     },
     watch:{
        success(val){
           if(val === true){
-             this.$router.push({name:'agents-portal'})
+             this.$router.push({name:'holiday-deals'})
           }
        }
     }
@@ -129,7 +103,7 @@ p {
 }
 
    .wallpaper-login {
-      background: url("../assets/loginagent.jpeg")
+      background: url("../assets/holidaylog.jpeg")
          no-repeat center center;
       background-size: cover;
       height: 100%;
@@ -147,7 +121,7 @@ p {
    }
    
    .wallpaper-register {
-      background: url("../assets/loginagent.jpeg")
+      background: url("../assets/holidaylog.jpeg")
          no-repeat center center;
       background-size: cover;
       height: 100%;

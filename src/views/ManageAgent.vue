@@ -37,24 +37,24 @@
         <b-container fluid style="height:100vh;margin-top:20px;border-top:10px;border-color:white;">
     <h3>Manage Staff</h3>
 
-    <b-input-group placeholder style="margin-right:18px;margin-top:10px;margin-bottom:10px;width:655px;">
+    <!-- <b-input-group placeholder style="margin-right:18px;margin-top:10px;margin-bottom:10px;width:655px;">
     <template #prepend>
       <b-input-group-text >Type To Search Table...</b-input-group-text>
     </template>
-    <b-form-input></b-form-input>
+    <b-form-input></b-form-input> -->
 
-  </b-input-group>
+  <!-- </b-input-group> -->
 
-
+<b-overlay :show="show" rounded="sm">
     <b-table :perPage="5" outlined hover :items="agents"  :fields="fields">
         <template #cell(profile_pic)="data">
         <b-img height="85" width="85" :src="data.value"></b-img>
       </template>
       <template #cell(action)="data">
-        <b-button @click="showAgent(data.value)" variant="info" style="margin:2px;font-weight:bold;">{{data.value}}</b-button>
+        <b-button @click="showAgent(data)" variant="info" style="margin:2px;font-weight:bold;">Delete Account</b-button>
       </template>
     </b-table>
-
+ </b-overlay>
 
         </b-container>
 
@@ -76,6 +76,7 @@
                     <b-list-group-item>
                         
                         <b-button @click="goSideBar('adds-agent')"  style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+                        <b-button @click="goSideBar('adds-client')"  style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
                         <b-button @click="goSideBar('adds-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
                         <b-button @click="goSideBar('adds-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
 
@@ -86,11 +87,11 @@
 
                 <b-list-group flush>
                     <b-list-group-item>
-                        <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+                      <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
                         <b-button @click="goSideBar('manage-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
-                        <b-button @click="goSideBar('manage-leads')" style="background-color:#0386ac;font-weight:bold;" block>Leads</b-button>
-                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
-                        <b-button @click="goSideBar('manage-account')" style="background-color:#0386ac;font-weight:bold;" block>Your Account</b-button>
+                        <b-button @click="goSideBar('manage-client')" style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
+              
+                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button> 
                         </b-list-group-item>
                 </b-list-group>
             </b-list-group-item>
@@ -102,7 +103,7 @@
     <b-modal v-if="updateAgent != null" ref="update" hide-footer title="Update Agent Profile">
         <b-row no-gutters>
             <b-col cols="4">
-<b-img center fluid thumbnail style="border-color:#ff8c00;border-width:4px;" rounded="circle" :src="updateAgent.photo" width="95" height="95" alt="Center image"></b-img>
+<b-img center fluid thumbnail style="border-color:#ff8c00;border-width:4px;" rounded="circle" :src="updateAgent.profile_pic" width="95" height="95" alt="Center image"></b-img>
             </b-col>
 
             <b-col cols="8">
@@ -178,6 +179,16 @@
       <b-button class="mt-2" variant="danger" block>Delete Agent</b-button>
     </b-modal>
 
+    
+   <b-modal ref="modal-1" hide-footer >
+      <div class="d-block text-center">
+        <h3>Are You Sure You Want To Delete This Account?</h3>
+      </div>
+      <b-button class="mt-3" variant="danger" block @click="deleteAccount">Delete</b-button>
+      <b-button class="mt-2" variant="warning" block @click="hide">Cancel</b-button>
+    </b-modal>
+   
+
 
 
 
@@ -190,6 +201,7 @@ export default {
     data(){
         return{
             agents: [],
+            show:false,
         fields: [
           {
             key: 'profile_pic',
@@ -208,7 +220,7 @@ export default {
             sortable: false
           },
           {
-            key: 'national_id',
+            key: 'staff_type',
             sortable: false
           },
           {
@@ -222,7 +234,18 @@ export default {
         }
     },
     mounted(){
-      axios.get('http://localhost:5001/homesforexpats-55b57/us-central1/getAgents').then( res => {
+      this.getAgents()
+    },
+    methods:{
+        goSideBar(route){
+
+            this.$router.push({name:route})
+
+        },
+        getAgents(){
+          this.agents = []
+          this.show = true;
+          axios.get('https://us-central1-homesforexpats.cloudfunctions.net/getAgents').then( res => {
 
 
             if(res.data != null){
@@ -233,25 +256,64 @@ export default {
                         this.agents.push(element)
                     });
 
+                    this.show = false
+
                     console.log(this.agents);
+                    
 
             }
                         
                         
         });
-    },
-    methods:{
-        goSideBar(route){
+        },
+        deleteAccount(){
 
-            this.$router.push({name:route})
+          var staff = localStorage.getItem("user_stafftype")
+            if(staff === "IT"){
 
+              this.$refs['modal-1'].hide()
+          this.show = true
+          //Delete Account
+            axios.post('https://us-central1-homesforexpats.cloudfunctions.net/deleteAccount',this.updateAgent).then( res => {
+
+                        console.log(res.data.title);
+                        
+                        this.show = false
+                        this.getAgents()
+                        if (res.data.title === 'success'){
+                            this.$bvToast.toast('Account Succesfully Deleted!', {
+                                title: "Holiday Added!",
+                                variant: 'success',
+                                solid: true
+                            });
+
+                            // this.$router.go(0);
+                            
+                        }
+                });
+                
+
+            }else{
+
+                this.$bvToast.toast('Only IT Staff Can Add New Staff', {
+                title: "Denied!",
+                variant: 'danger',
+                solid: true
+                });
+            }
+
+          
+
+        },
+        hide(){
+            this.$refs['modal-1'].hide()
         },
         showAgent(item){
 
-          console.log(item)
-            // this.updateAgent = item
+            this.updateAgent = item.item
+            this.$refs['modal-1'].show()
+            
 
-            // this.$refs['update'].show()
         }
         
     }

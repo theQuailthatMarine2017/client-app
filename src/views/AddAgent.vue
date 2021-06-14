@@ -91,7 +91,7 @@
 
         <b-col cols="6">
  <b-form-group
-                    label="Upload Staff's Profile Picture Plus National ID and KRA Certificate.PLEASE SELECT PHOTOS IN THE FOLLOWING ORDER: PROFILE PICTURE FIRST THEN OTHER DOCUMENTS."
+                    label="Upload Staff's Profile Picture."
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
@@ -163,6 +163,7 @@
                     <b-list-group-item>
                         
                         <b-button @click="goSideBar('adds-agent')"  style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+                        <b-button @click="goSideBar('adds-client')"  style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
                         <b-button @click="goSideBar('adds-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
                         <b-button @click="goSideBar('adds-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
 
@@ -173,11 +174,10 @@
 
                 <b-list-group flush>
                     <b-list-group-item>
-                        <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+           <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
                         <b-button @click="goSideBar('manage-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
-                        <b-button @click="goSideBar('manage-leads')" style="background-color:#0386ac;font-weight:bold;" block>Leads</b-button>
-                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
-                        <b-button @click="goSideBar('manage-account')" style="background-color:#0386ac;font-weight:bold;" block>Your Account</b-button>
+                        <b-button @click="goSideBar('manage-client')" style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
+                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button> 
                         </b-list-group-item>
                 </b-list-group>
             </b-list-group-item>
@@ -198,7 +198,7 @@ import base64Img from 'base64-img';
 export default {
     data(){
         return{
-            type:['IT','BUSINESS/MARKETING','AGENT','ÁCCOUNTING'],
+            type:['IT','BUSINESS/MARKETING','AGENT','ACCOUNTING'],
             show:false,
             agent_docs:[],
             agent:{
@@ -223,37 +223,49 @@ export default {
         },
         addImg(file){
 
+            var staff = localStorage.getItem("user_stafftype")
+            if(staff === "IT"){
 
-            this.agent.agent_imgs.push(file)
+                this.agent.agent_imgs.push(file)
 
 
-            if(this.agent.agent_imgs.length === this.agent_docs.length){
+                if(this.agent.agent_imgs.length === this.agent_docs.length){
 
-                console.log(this.agent.agent_imgs[0]);
+                    console.log(this.agent.agent_imgs[0]);
 
-                this.agent.profile_pic = this.agent.agent_imgs[0];
+                    this.agent.profile_pic = this.agent.agent_imgs[0];
 
-                this.show = true;
+                    this.show = true;
 
-                this.agent.agent_imgs.pop(this.agent.agent_imgs[0]);
+                    this.agent.agent_imgs.pop(this.agent.agent_imgs[0]);
 
-                
-                axios.post('http://localhost:5001/homesforexpats-55b57/us-central1/addAgent',this.agent).then( res => {
 
-                        console.log(res.data.title);
-                        this.show = false
-                        if (res.data.title === 'success'){
-                            this.$bvToast.toast('Staff Details Succesfully Added!', {
-                                title: "Staff Added!",
-                                variant: 'success',
-                                solid: true
-                            });
+                    axios.post('https://us-central1-homesforexpats.cloudfunctions.net/addAgent',this.agent).then( res => {
 
-                            // this.$router.go(0);
-                            
-                        }
-                })
+                            console.log(res.data.title);
+                            this.show = false
+                            if (res.data.title === 'success'){
+                                this.$bvToast.toast('Staff Details Succesfully Added!', {
+                                    title: "Staff Added!",
+                                    variant: 'success',
+                                    solid: true
+                                });
+
+                                // this.$router.go(0);
+                                
+                            }
+                    })
+                }
+
+            }else {
+
+                this.$bvToast.toast('Only IT Staff Can Add New Staff', {
+                title: "Denied!",
+                variant: 'danger',
+                solid: true
+            });
             }
+            
             
         },
         async addAgent(){

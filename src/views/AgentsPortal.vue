@@ -2,7 +2,7 @@
 <div >
     <b-navbar toggleable="lg" style="background-color:#0386ac;" >
         <!-- <b-icon style="width: 60px; height: 60px;color:white;" icon="list"></b-icon> -->
-    <b-navbar-brand href="#" style="color:white;font-weight:bolder;">
+    <b-navbar-brand @click="goHome" href="#" style="color:white;font-weight:bolder;">
         
         <img  style="width:190px;height:70px;" src="https://i.postimg.cc/Yqq67FGt/New-Project-25.png" alt="Shards Dashboard">
         <!-- <h5>HomesforExpats</h5> -->
@@ -48,6 +48,8 @@
                     <b-list-group-item>
                         
                         <b-button @click="goSideBar('adds-agent')"  style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+                                                <b-button @click="goSideBar('adds-client')"  style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
+
                         <b-button @click="goSideBar('adds-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
                         <b-button @click="goSideBar('adds-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
 
@@ -58,11 +60,10 @@
 
                 <b-list-group flush>
                     <b-list-group-item>
-                        <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+              <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
                         <b-button @click="goSideBar('manage-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
-                        <b-button @click="goSideBar('manage-leads')" style="background-color:#0386ac;font-weight:bold;" block>Leads</b-button>
-                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
-                        <b-button @click="goSideBar('manage-account')" style="background-color:#0386ac;font-weight:bold;" block>Your Account</b-button>
+                        <b-button @click="goSideBar('manage-client')" style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
+                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button> 
                         </b-list-group-item>
                 </b-list-group>
             </b-list-group-item>
@@ -79,12 +80,13 @@
                 <b-container style="margin-top:20px;font-weight:bolder;">
 <h3>Your Profile</h3>
                     <b-list-group flush>
-                        <b-list-group-item><b-img fluid thumbnail  src="https://blackrealtors.com/wp-content/uploads/2019/11/black-man-realtor.jpg" width="240" height="240" alt="Center image"></b-img></b-list-group-item>
-                        <b-list-group-item>FULLNAMES: Steven Kinyanjui Biko</b-list-group-item>
-                        <b-list-group-item>MOBILE: 0705009784</b-list-group-item>
-                        <b-list-group-item>EMAIL: tam@g.com</b-list-group-item>
-                        <b-list-group-item>AGENT PORTAL CODE: SKB001-21-5</b-list-group-item>
-                        <b-button block variant="info">Request Profile Update</b-button>
+                        <b-list-group-item><b-img fluid thumbnail  :src="user.profile_pic" width="100" height="100" alt="Center image"></b-img></b-list-group-item>
+                        <b-list-group-item>FULLNAMES: {{ user.fullnames }}</b-list-group-item>
+                        <b-list-group-item>MOBILE: {{ user.mobile }}</b-list-group-item>
+                        <b-list-group-item>EMAIL: {{ user.email }}</b-list-group-item>
+                        <b-list-group-item>STAFF TYPE: {{ user.stafftype }}</b-list-group-item>
+                        <b-list-group-item>PORTAL CODE: {{ user.agentcode }}</b-list-group-item>
+                        <b-button @click="signOut" block variant="info">Sign Out Of Account</b-button>
                     </b-list-group>
                     
                         
@@ -99,89 +101,27 @@
 
           <b-col cols="3">
 
+<b-overlay :show="show" rounded="sm">
               <b-container style="margin:0px;text-align:left;color:white;border-radius:12px;padding:20px;">
 <h3 style="color:black;">Notification Center</h3>
 
-<div style="width:450px;height:214px;overflow:auto;background-color:#d3d3d3;padding:15px;border-radius:15px;">
-    <div style="padding:10px;background-color:#0386ac;width:400px;border-radius:12px;">
+<div   style="width:450px;height:515px;overflow:auto;background-color:#d3d3d3;padding:15px;border-radius:15px;">
+
+
+    <div v-for="item in sortedItems" v-bind:key="item.date" style="padding:10px;margin:10px;background-color:#0386ac;width:400px;border-radius:12px;">
                         <h6 style="font-weight:bold;">
-                            <span style="text-decoration:underline;">New Client Request!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Runda Meadows, House Number 412
+                            <span style="text-decoration:underline;">{{ item.title }}</span><br>{{ item.date | moment("dddd, MMMM Do YYYY") }}<br>{{ item.name }}
                         </h6>
                     </div>
-                    <div style="padding:10px;background-color:#0386ac;margin-top:5px;width:400px;border-radius:12px;">
-                        <h6 style="font-weight:bold;">
-                            <span style="text-decoration:underline;">Agent Update Account Request!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Requested by Steven Kinyanjui Biko.
-                        </h6>
-                    </div>
-                    <div style="margin-top:5px;padding:10px;background-color:#0386ac;width:400px;border-radius:12px;">
-                        <h6 style="font-weight:bold;">
-                            <span style="text-decoration:underline;">New Property Added!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Ridgways, Dell Road, House Number 412
-                        </h6>
-                    </div>
-                    <div style="margin-top:5px;padding:10px;background-color:#0386ac;width:400px;border-radius:12px;">
-                        <h6 style="font-weight:bold;">
-                            <span style="text-decoration:underline;">New Tenant Added!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Shirley Oganda from Toronto Canada<br>Renting Runda, Mimosa Grove, House Number 234
-                        </h6>
-                    </div>
-                    <div style="margin-top:5px;padding:10px;background-color:#0386ac;width:400px;border-radius:12px;">
-                        <h6 style="font-weight:bold;">
-                            <span style="text-decoration:underline;">New Holiday Added!</span><br>{{ time | moment("dddd, MMMM Do YYYY") }}<br>Diani, Searock Apartments
-                        </h6>
-                    </div>
+                   
 </div>
 
-<h3 style="margin-top:9px;color:black;">Overview</h3>
-
-<b-row no-gutters style="text-align:center;">
-
-   
-
-    <b-col cols="6">
-
-        <div style="padding:8px;background-color:#0386ac;border-radius:12px;">
-                        <h6 style="font-weight:bold;">
-                            20 Houses Listed
-                        </h6>
-                    </div>
-
-    </b-col>
-
-    <b-col cols="6">
-
-        <div style="padding:8px;background-color:#0386ac;border-radius:12px;margin-left:5px;">
-                        <h6 style="font-weight:bold;">
-                            8 Houses Rented
-                        </h6>
-                    </div>
-
-    </b-col>
-
-    <b-col cols="12">
-
-        <div style="margin-top:8px;padding:10px;background-color:#0386ac;border-radius:12px;">
-                        <h6 style="font-weight:bold;">
-                            5 Holiday Deals Available
-                        </h6>
-                    </div>
 
 
-        <div style="margin-top:8px;padding:10px;background-color:#0386ac;border-radius:12px;">
-            <h6 style="font-weight:bold;">
-                3 Leads Pending
-            </h6>
-        </div>
-
-        <div style="margin-top:8px;padding:10px;background-color:#0386ac;border-radius:12px;width:auto;">
-            <h6 style="font-weight:bold;">
-                40,000 Page Visits from 50 Different Countries
-            </h6>
-        </div>
-
-    </b-col>
-</b-row>
 
             
     </b-container>
+    </b-overlay>
   
           </b-col>
 
@@ -190,7 +130,13 @@
 </b-row>
 
 
-
+<b-modal ref="modal-1" hide-footer >
+      <div class="d-block text-center">
+        <h3>Are You Sure You Want To Sign Out?</h3>
+      </div>
+      <b-button class="mt-3" variant="danger" block @click="loggOff">Sign Out</b-button>
+      <b-button class="mt-2" variant="warning" block @click="cancelAction">Cancel</b-button>
+    </b-modal>
 
 
 </div>
@@ -198,12 +144,22 @@
 
 <script>
 import { Bar } from 'vue-chartjs';
-
+import axios from 'axios';
 export default {
     data(){
         return{
             time:Date.now(),
             variant: 'dark',
+            show:false,
+            notifications:[],
+            user:{
+                fullnames:'',
+                profile_pic:'',
+                mobile:'',
+                email:'',
+                agentcode:'',
+                stafftype:'',
+            },
             chartOptions: {
           chart: {
             id: 'vuechart-example'
@@ -226,13 +182,97 @@ export default {
             }
         }
     },
+    mounted(){
+
+        this.checkUser()
+        
+    },
     methods:{
         goSideBar(route){
 
             this.$router.push({name:route})
 
         },
+        cancelAction(){
+
+            this.$refs['modal-1'].hide()
+
+        } ,
+        goHome(){
+
+            this.$router.push({path:'/'})
+
+        } ,      
+        checkUser(){
+
+            if(localStorage.getItem('user_agentcode') != null){
+
+                // var user = JSON.parse(localStorage.getItem('user'))
+                this.user.fullnames = localStorage.getItem('user_fullnames')
+                this.user.profile_pic = localStorage.getItem('user_profilepic')
+                this.user.email = localStorage.getItem('user_email')
+                this.user.mobile = localStorage.getItem('user_mobile')
+                this.user.agentcode = localStorage.getItem('user_agentcode')
+                this.user.stafftype = localStorage.getItem('user_stafftype')
+
+                console.log(this.user.agentcode)
+                
+                this.$bvToast.toast('Welcome Back ' + this.user.fullnames + '!', {
+                    title: "Welcome!",
+                    variant: 'success',
+                    solid: true
+                });
+
+                this.getNotifications()
+
+            }else{
+
+                this.$router.push({path:'/'})
+            }
+
+        },
+        getNotifications(){
+
+            this.show = true
+            axios.get('https://us-central1-homesforexpats.cloudfunctions.net/getNotifications').then( res => {
+
+
+            if(res.data != null){
+
+                res.data.forEach(element => {
+                        console.log(element)
+                        this.notifications.push(element)
+                        
+                    });
+
+                    this.show = false
+
+                    console.log(this.notifications);
+
+            }
+                        
+                        
+        })
+        },
+        signOut(){
+
+            this.$refs['modal-1'].show()
+
+        },
+        loggOff(){
+
+            localStorage.clear()
+            this.checkUser()
+        }
+    },
+    computed: {
+    sortedItems: function() {
+        this.notifications.sort( ( a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+        return this.notifications;
     }
+}
     
 }
 </script>

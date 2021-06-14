@@ -35,124 +35,111 @@
             </b-collapse>
         </b-navbar>
 
-        <b-container fluid style="height:70vh;margin-top:20px;border-top:10px;border-color:white;">
-    <h3>Add New Holiday Deal</h3>
-
+        <b-container fluid style="height:65vh;margin-top:20px;border-top:10px;border-color:white;">
+    <h3>Add New Client</h3>
 <b-overlay :show="show" rounded="sm">
     <b-row>
         <b-col  cols="6">
-
-            <b-card>
             
            <div>
                <b-form-group
-                    label="Enter Holiday Location Name:"
+                    label="Enter Client's Full Names:"
                     
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Holiday Package Name"  v-model="holiday.name" placeholder="Enter Holiday Package Name"></b-form-input>
+                <b-form-input title="Enter Agent's Full Names"  v-model="client.fullnames" placeholder="Enter Client's Names"></b-form-input>
                </b-form-group>
                 <b-form-group
-                    label="Enter Holiday Agent's Mobile:"
+                    label="Enter Client's Mobile:"
                     
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                    <vue-phone-number-input default-country-code="KE" required :only-countries="countries" v-model="holiday.mobile" />
+                    <vue-phone-number-input :preferred-countries="['KE']"  required :only-countries="countries" v-model="client.mobile" />
                </b-form-group>
                 <b-form-group
-                    label="Enter Holiday Agent's Email:"
+                    label="Enter Client's Email:"
                     
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input v-model="holiday.email" title="Enter Holiday Agent's Email"   placeholder="Enter Agent's Email"></b-form-input>
+                <b-form-input v-model="client.email" title="Enter Agent's Email"   placeholder="Enter Client's Email"></b-form-input>
                </b-form-group>
 
                <b-form-group
-                    label="Enter Holiday Description:"
+                    label="Select Home For Client Rental:"
+                    v-if="agents != null"
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-textarea
-                        id="textarea"
-                        v-model="holiday.description"
-                        placeholder="Enter Brief Holiday Package Description"
-                        rows="3"
-                        max-rows="4"
-                        ></b-form-textarea>
+                <b-form-select v-model="client.home" :options="agents"></b-form-select>
                </b-form-group>
-                
+
+
+                    
            </div>
-
-            </b-card>
-
 
         </b-col>
 
         <b-col cols="6">
 
-            <b-card>
-            <b-form-group
-                    label="Upload Holiday Location Photos:"
-                    label-for="input-1"
-                    style="text-align:left;font-weight:bolder;"
-                    valid-feedback="Thank you!"
-                    invalid-feedback="invalid input"
-                    >
-            <b-form-file
-                v-model="holiday_photos"
-                multiple
-                placeholder="Select Photo To Upload...."
-                accept="image/jpeg"
-                drop-placeholder="Drop Agent's Photo here..."
-                ></b-form-file>
-            </b-form-group>
+            
 
             <b-form-group
-                    label="Enter Holiday Package Cost"
+                    label="Enter Client's Country of Residence:"
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
+                <b-form-input title="Enter Client's Country of Residence"  v-model="client.residence" placeholder="Enter Client's Country of Residence"></b-form-input>
+               </b-form-group>
+
+               <b-form-group
+                    label="Enter Client's Passport Number:"
                     
-                <b-form-spinbutton v-model="holiday.cost" :value=30000 step="250" min="10000" max="100000"></b-form-spinbutton>
-               </b-form-group>
-
-                <b-form-group
-                    label="Enter Holiday Discount"
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-spinbutton v-model="holiday.discount" :value=10 step="5" min="5" max="30"></b-form-spinbutton>
+                <b-form-input v-model="client.passport_number" title="Enter Agent's Passport Number" placeholder="Enter Client's Passport Number"></b-form-input>
                </b-form-group>
+
+            <b-form-group
+                    label="Enter Client's Code:"
+                    label-for="input-1"
+                    style="text-align:left;font-weight:bolder;"
+                    valid-feedback="Thank you!"
+                    invalid-feedback="invalid input"
+                    >
+                <b-form-input title="Enter Client's Code"  v-model="client.clientcode" placeholder="Enter Client's Portal Code"></b-form-input>
+               </b-form-group>
+
+               
 
                <b-alert show variant="danger" style="padding:12px;">
                    <strong> Upload Policy<br></strong>
-                    <strong>Be Aware That Holidays Can Only Be Added After Business Director's Approval!</strong>
+                    <strong>Be Aware That Client Can Only Be Added After Business Director's Approval!</strong>
                 </b-alert>
 
-               <b-button block @click="addHoliday" style="background-color:orange;font-weight:bolder;">Add New Holiday</b-button>
+               <b-button @click="addClient" block style="background-color:orange;font-weight:bolder;">Add New Client</b-button>
 
-            </b-card>
         </b-col>
 
-        
-
     </b-row>
+
 </b-overlay>
+
         </b-container>
 
 
@@ -164,9 +151,7 @@
       backdrop
       shadow
     >
-    <b-alert show variant="success" style="margin:8px;">
-     <strong>You Have 3 Pending Leads!</strong>
-   </b-alert>
+   
       <div class="px-3 py-2" >
           <b-list-group flush>
             <b-list-group-item><b-button @click="goSideBar('agents-portal')" style="background-color:#0386ac;font-weight:bold;" block>Overview</b-button></b-list-group-item>
@@ -176,7 +161,6 @@
                     <b-list-group-item>
                         
                         <b-button @click="goSideBar('adds-agent')"  style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
-                        <b-button @click="goSideBar('adds-client')"  style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
                         <b-button @click="goSideBar('adds-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
                         <b-button @click="goSideBar('adds-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
 
@@ -187,7 +171,7 @@
 
                 <b-list-group flush>
                     <b-list-group-item>
-                <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+                        <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
                         <b-button @click="goSideBar('manage-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
                         <b-button @click="goSideBar('manage-client')" style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
                         <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button> 
@@ -204,27 +188,48 @@
 </template>
 
 <script>
-import { uuid } from 'vue-uuid';
-import axios from 'axios';
 
+import axios from 'axios';
+import base64Img from 'base64-img';
 
 export default {
     data(){
         return{
-            holiday:{
-                _id:uuid.v1(),
-                name:'',
-                mobile:'',
+            show:false,
+            agents:[],
+            client:{
+                clientcode:'',
+                fullnames:'',
                 email:'',
-                description:'',
-                photos:[],
-                cost:0,
-                discount:0
+                mobile:'',
+                home:'',
+                residence:'',
+                passport_number:'',
             },
-            holiday_photos:[],
-            countries:['KE'],
-            show:false
+            countries:['US','KE']
+
         }
+    },
+    mounted(){
+
+        axios.get('https://us-central1-homesforexpats.cloudfunctions.net/getHomes').then( res => {
+
+
+            if(res.data != null){
+
+                res.data.forEach(element => {
+                        console.log(element.location)
+                        this.agents.push(element.location)
+                        
+                    });
+
+                    console.log(this.agents);
+
+            }
+                        
+                        
+        });
+
     },
     methods:{
         goSideBar(route){
@@ -232,34 +237,29 @@ export default {
             this.$router.push({name:route})
 
         },
-        addImg(file){
+        addClient(){
 
             var staff = localStorage.getItem("user_stafftype")
             if(staff === "IT"){
 
-                this.holiday.photos.push(file)
+                 this.show = true;
 
-                if(this.holiday.photos.length === this.holiday_photos.length){
+            axios.post('https://us-central1-homesforexpats.cloudfunctions.net/addClient',this.client).then( res => {
 
-                    this.show = true;
+                        console.log(res.data.title);
+                        this.show = false
+                        if (res.data.title === 'success'){
+                            this.$bvToast.toast('Client Succesfully Added!', {
+                                title: "Client Added!",
+                                variant: 'success',
+                                solid: true
+                            });
 
-                    axios.post('https://us-central1-homesforexpats.cloudfunctions.net/addHoliday',this.holiday).then( res => {
-
-                            console.log(res.data.title);
-                            this.show = false
-                            if (res.data.title === 'success'){
-                                this.$bvToast.toast('Holiday Added Succesfully Added!', {
-                                    title: "Holiday Added!",
-                                    variant: 'success',
-                                    solid: true
-                                });
-
-                                // this.$router.go(0);
-                                
-                            }
-                    })
-                }
-
+                            // this.$router.go(0);
+                            
+                        }
+                })
+                
 
             }else{
 
@@ -269,27 +269,10 @@ export default {
                 solid: true
                 });
             }
-
             
-        },
-        addHoliday(){
-
-            console.log(this.holiday_photos)
-
-            this.holiday_photos.forEach(element => {
-
-                var reader = new FileReader();
-
-                reader.readAsDataURL(element);
-
-                reader.onload = async () => {
-                    this.addImg(reader.result)
-                }
-                
-            });
+           
 
         }
-
     }
     
 }

@@ -23,6 +23,9 @@ import { faUserSecret } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+import VueFinalModal from 'vue-final-modal/lib'
+
+Vue.use(VueFinalModal())
 
 Vue.component('vue-phone-number-input', VuePhoneNumberInput);
 

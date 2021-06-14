@@ -57,17 +57,7 @@
                 <b-form-input v-model="home.location" title="Enter Properyt Location Name"  placeholder="Enter Agent's Names"></b-form-input>
                </b-form-group>
 
-                <b-form-group
-                    label="Select Agent To Assign:"
-                    v-if="agents != null"
-                    label-for="input-1"
-                    style="text-align:left;font-weight:bolder;"
-                    valid-feedback="Thank you!"
-                    invalid-feedback="invalid input"
-                    >
-                <b-form-select v-model="home.agent" :options="agents"></b-form-select>
-               </b-form-group>
-
+               
 
                 <b-form-group
                     label="Website Banner Description:"
@@ -103,8 +93,23 @@
                         ></b-form-textarea>
                </b-form-group>
 
+               <b-form-group
+                    label="Upload Property Banner Image."
+                    label-for="input-1"
+                    style="text-align:left;font-weight:bolder;"
+                    valid-feedback="Thank you!"
+                    invalid-feedback="invalid input"
+                    >
+            <b-form-file
+                v-model="home_banner"
+                placeholder="Select Property Images To Upload...."
+                accept="image/jpeg"
+                drop-placeholder="Drop Agent's Photo here..."
+                ></b-form-file>
+            </b-form-group>
+
             <b-form-group
-                    label="Upload Property Images (Mimimum 10 Photos): Make Sure To Select Banner Image First Then Rest Of Images."
+                    label="Upload Other Property Images (Mimimum 5 Photos)."
                     label-for="input-1"
                     style="text-align:left;font-weight:bolder;"
                     valid-feedback="Thank you!"
@@ -128,7 +133,7 @@
         <b-col cols="3">
 
             <b-card>
-            <h5>Property Owner Details</h5>
+            <h5>Property Owner & Agent Details</h5>
 
 
             <b-form-group
@@ -148,7 +153,7 @@
                     valid-feedback="Thank you!"
                     invalid-feedback="invalid input"
                     >
-                <b-form-input title="Enter Property Owners Mobile"  v-model="home.owner_mobile" placeholder="Enter Agent's KRA Pin"></b-form-input>
+                <vue-phone-number-input default-country-code="KE" required :only-countries="countries" v-model="home.owner_mobile" />
                </b-form-group>
 
                <b-form-group
@@ -160,6 +165,18 @@
                     >
                 <b-form-input title="Enter Property Owners Email"  v-model="home.owner_email" placeholder="Enter Agent's KRA Pin"></b-form-input>
                </b-form-group>
+
+                <b-form-group
+                    label="Select Agent Assigned To Property:"
+                    v-if="agents != null"
+                    label-for="input-1"
+                    style="text-align:left;font-weight:bolder;"
+                    valid-feedback="Thank you!"
+                    invalid-feedback="invalid input"
+                    >
+                <b-form-select v-model="home.agent" :options="agents"></b-form-select>
+               </b-form-group>
+
 
             </b-card>
         </b-col>
@@ -405,6 +422,7 @@
                     <b-list-group-item>
                         
                         <b-button @click="goSideBar('adds-agent')"  style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
+                        <b-button @click="goSideBar('adds-client')"  style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
                         <b-button @click="goSideBar('adds-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
                         <b-button @click="goSideBar('adds-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
 
@@ -417,9 +435,9 @@
                     <b-list-group-item>
                         <b-button @click="goSideBar('manage-agent')" style="background-color:#0386ac;font-weight:bold;" block>Agent</b-button>
                         <b-button @click="goSideBar('manage-property')" style="background-color:#0386ac;font-weight:bold;" block>Property</b-button>
-                        <b-button @click="goSideBar('manage-leads')" style="background-color:#0386ac;font-weight:bold;" block>Leads</b-button>
-                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button>
-                        <b-button @click="goSideBar('manage-account')" style="background-color:#0386ac;font-weight:bold;" block>Your Account</b-button>
+                        <b-button @click="goSideBar('manage-client')" style="background-color:#0386ac;font-weight:bold;" block>Client</b-button>
+  
+                        <b-button @click="goSideBar('manage-holiday')" style="background-color:#0386ac;font-weight:bold;" block>Holiday Deal</b-button> 
                         </b-list-group-item>
                 </b-list-group>
             </b-list-group-item>
@@ -439,7 +457,9 @@ export default {
     data(){
         return{
             show:false,
+            countries:['KE'],
             home_imgs:[],
+            home_banner:null,
             agent:{
                 photo:null,
                 fullnames:'',
@@ -453,8 +473,8 @@ export default {
             home:{
                 _id:uuid.v1(),
                 location:'',
+                available:true,
                 agent:'',
-                agent_img:null,
                 banner_description:'',
                 banner_img:'',
                 main_description:'',
@@ -486,7 +506,7 @@ export default {
     mounted(){
 
         //Fetch Agents From Database And Populate The Selection options
-        axios.get('http://localhost:5001/homesforexpats-55b57/us-central1/getAgents').then( res => {
+        axios.get('https://us-central1-homesforexpats.cloudfunctions.net/getAgents').then( res => {
 
 
             if(res.data != null){
@@ -494,7 +514,10 @@ export default {
                 res.data.forEach(element => {
                         console.log(element.fullnames)
 
-                        this.agents.push(element.fullnames)
+                        if(element.staff_type === "AGENT"){
+                            this.agents.push('Name: '+ element.fullnames + ' Mobile: ' + element.mobile + ' Email: ' +element.email)
+                        }
+                        
                     });
 
                     console.log(this.agents);
@@ -512,20 +535,19 @@ export default {
             this.$router.push({name:route})
 
         },
-        addImg(file){
+        submitHome(){
 
-            this.home.imgs.push(file)
+            var reader = new FileReader();
 
-            this.home.banner_img = this.home.imgs[0];
+            reader.readAsDataURL(this.home_banner);
 
-            if(this.home.imgs.length === this.home_imgs.length){
+            reader.onload = async () => {
 
-                console.log(this.home.banner_img)
+                this.home.banner_img = reader.result
+
                 this.show = true;
 
-                this.home.imgs.pop(this.home.imgs[0]);
-
-                axios.post('http://localhost:5001/homesforexpats-55b57/us-central1/addHome',this.home).then( res => {
+                axios.post('https://us-central1-homesforexpats.cloudfunctions.net/addHome',this.home).then( res => {
 
                         console.log(res.data.title);
                         this.show = false
@@ -535,12 +557,39 @@ export default {
                                 variant: 'success',
                                 solid: true
                             });
-
-                            // this.$router.go(0);
                             
                         }
                 })
+
             }
+
+        },
+        addImg(file){
+
+            var staff = localStorage.getItem("user_stafftype")
+            if(staff === "IT"){
+
+                this.home.imgs.push(file)
+
+            if(this.home.imgs.length === this.home_imgs.length){
+
+                //After Looping Other Photos Change Banner Image Selection Before Axois Post
+                this.submitHome()
+
+                
+            }
+                
+
+            }else{
+
+                this.$bvToast.toast('Only IT Staff Can Add New Staff', {
+                title: "Denied!",
+                variant: 'danger',
+                solid: true
+                });
+            }
+
+            
         },
         addHome(){
 
